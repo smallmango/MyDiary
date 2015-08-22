@@ -9,17 +9,25 @@ public class Diary {
     private String name;
     private int userId;
 
+    public Diary(){}
+    public Diary(String name,int userId){
+
+        this.name=name;
+        this.userId=userId;
+    }
+    public Diary(int diaryID,String name, int userId) {
+
+        this.diaryID=diaryID;
+        this.name = name;
+        this.userId = userId;
+    }
+
     public int getDiaryID() {
         return diaryID;
     }
 
     public void setDiaryID(int diaryID) {
         this.diaryID = diaryID;
-    }
-
-    public Diary(String name, int userId) {
-        this.name = name;
-        this.userId = userId;
     }
 
     public String getName() {

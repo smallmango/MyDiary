@@ -84,6 +84,7 @@ public class MyDiaryDB {
 
         if(diary!=null){
             ContentValues values = new ContentValues();
+            //values.put("id",diary.getDiaryID());
             values.put("diary_name",diary.getName());
             values.put("user_id",diary.getUserId());
             db.insert("Diary",null,values);
@@ -94,19 +95,25 @@ public class MyDiaryDB {
     /**
      * 查询所有日记题目:用于装载ListView 未测试
      */
-    public List<String> checkDiaryTitles(User user){
+    public List<Diary> checkDiaryTitles(User user){
 
-        List<String> titles = new ArrayList<String>();
+        List<Diary> diarys = new ArrayList<Diary>();
         Cursor cursor = db.query("Diary",null,"user_id=?",new String[]{String.valueOf(user.getId())},null,null,null);
         if(cursor.moveToFirst()){
             do {
+                Diary diary = new Diary();
+                String id=cursor.getString(cursor.getColumnIndex("id"));
+                String diary_name = cursor.getString(cursor.getColumnIndex("diary_name"));
+                int user_id= user.getId();
 
-                String title = cursor.getString(cursor.getColumnIndex("diary_name"));
-                titles.add(title);
+                diary.setDiaryID(Integer.parseInt(id));
+                diary.setName(diary_name);
+                diary.setUserId(user_id);
 
+                diarys.add(diary);
             }while(cursor.moveToNext());
         }
-        return titles;
+        return diarys;
     }
 
 

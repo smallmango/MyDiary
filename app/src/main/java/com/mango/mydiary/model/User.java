@@ -8,6 +8,7 @@ public class User {
     private int id;
     private int password;
 
+    public User(){}
     public User(int id, int password) {
         this.id = id;
         this.password = password;
