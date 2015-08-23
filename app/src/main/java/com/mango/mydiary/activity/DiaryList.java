@@ -30,6 +30,9 @@ public class DiaryList extends Activity implements View.OnClickListener{
     private DiaryAdapter diaryAdapter;
     private ListView listView;
     private Button writeDiary;
+    private static final int FIRST= 1; //第一次获取数据库
+    private static final int SECOND= 2; //更新数据库(更新Listview)
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,8 +40,9 @@ public class DiaryList extends Activity implements View.OnClickListener{
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.diary_list);
         mContext=getApplicationContext();
+        //Log.i("look","haha");
         init(); //初始化控件,添加点击事件
-        getData(); //根据用户名去从数据库中获取日志
+        getData(FIRST); //根据用户名去从数据库中获取日志
         diaryAdapter = new DiaryAdapter(mContext,R.layout.diary_item,diaryList);
         listView= (ListView) findViewById(R.id.diaryListView);
         listView.setAdapter(diaryAdapter);
@@ -47,9 +51,9 @@ public class DiaryList extends Activity implements View.OnClickListener{
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Diary diary = diaryList.get(position); //获取到点击对象
                 String diaryTitle = diary.getName();
-                Intent intent = new Intent(mContext,DiaryText.class); //跳转到日记内容页面
+                Intent intent = new Intent(mContext, DiaryText.class); //跳转到日记内容页面
                 Bundle bundle = new Bundle();
-                bundle.putString("diaryTitle",diaryTitle);
+                bundle.putString("diaryTitle", diaryTitle);
                 intent.putExtras(bundle);
                 startActivity(intent);
             }
@@ -63,14 +67,20 @@ public class DiaryList extends Activity implements View.OnClickListener{
         writeDiary.setOnClickListener(this);
     }
 
-    private void getData() {
+    private void getData(int choose) {
 
+        //Log.i("kao","oo");
         SharedPreferences pref = getSharedPreferences("user", MODE_PRIVATE);
         String userID= pref.getString("userID", "");
         String userPassword=pref.getString("userPassword","");
         diaryDB=MyDiaryDB.getInstance(mContext);
         //setData(userID, diaryDB); //设置测试数据
-        diaryList=diaryDB.checkDiaryTitles(new User(Integer.parseInt(userID),Integer.parseInt(userPassword))); //获取返回对象
+        if(choose==1) {
+            diaryList = diaryDB.checkDiaryTitles(new User(Integer.parseInt(userID), Integer.parseInt(userPassword))); //获取返回对象
+        }else{
+            diaryList.addAll(diaryDB.checkDiaryTitles(new User(Integer.parseInt(userID),Integer.parseInt(userPassword))));
+        }
+
     }
 
     //获取测试数据
@@ -90,5 +100,30 @@ public class DiaryList extends Activity implements View.OnClickListener{
                 startActivity(intent);
                 break;
         }
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        updateDatabase(); //更新数据库并刷新
+    }
+
+    private void updateDatabase() {
+
+        //Log.i("fuck", "shit");
+        diaryList.clear(); //清除原数据
+        getData(SECOND); //重新获取数据库数据
+        diaryAdapter.notifyDataSetChanged();
     }
 }

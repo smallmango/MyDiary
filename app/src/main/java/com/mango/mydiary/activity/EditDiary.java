@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.mango.mydiary.R;
 import com.mango.mydiary.db.MyDiaryDB;
@@ -46,9 +47,9 @@ public class EditDiary extends Activity implements View.OnClickListener {
     private void getUser() {
 
         SharedPreferences pref = getSharedPreferences("user", MODE_PRIVATE);
-        String userID= pref.getString("userID", "");
-        String userPassword=pref.getString("userPassword","");
-        user=new User();
+        String userID = pref.getString("userID", "");
+        String userPassword = pref.getString("userPassword", "");
+        user = new User();
         user.setId(Integer.parseInt(userID)); //为全局对象赋值
         user.setPassword(Integer.parseInt(userPassword));
     }
@@ -72,6 +73,8 @@ public class EditDiary extends Activity implements View.OnClickListener {
                 String text = diaryText.getText().toString(); //获取日志内容
                 saveTitle(title); //将日志题目保存到数据库
                 saveText(title, text); //将日志内容保存到文件
+                Toast.makeText(mContext, "上传成功", Toast.LENGTH_LONG).show();
+                finish();
                 break;
         }
     }
@@ -98,6 +101,7 @@ public class EditDiary extends Activity implements View.OnClickListener {
         }
     }
 
+    //将日志标题保存到数据库
     private void saveTitle(String title) {
 
         diaryDB = MyDiaryDB.getInstance(mContext);
