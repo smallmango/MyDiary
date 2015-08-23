@@ -7,15 +7,15 @@ public class Diary {
 
     private int diaryID;
     private String name;
-    private int userId;
+    private String userId;
 
     public Diary(){}
-    public Diary(String name,int userId){
+    public Diary(String name,String userId){
 
         this.name=name;
         this.userId=userId;
     }
-    public Diary(int diaryID,String name, int userId) {
+    public Diary(int diaryID,String name, String userId) {
 
         this.diaryID=diaryID;
         this.name = name;
@@ -38,11 +38,11 @@ public class Diary {
         this.name = name;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 }

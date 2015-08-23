@@ -5,28 +5,28 @@ package com.mango.mydiary.model;
  */
 public class User {
 
-    private int id;
-    private int password;
+    private String id;
+    private String password;
 
     public User(){}
-    public User(int id, int password) {
+    public User(String id, String password) {
         this.id = id;
         this.password = password;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    public int getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(int password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 

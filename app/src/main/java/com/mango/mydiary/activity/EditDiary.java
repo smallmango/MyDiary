@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -50,8 +51,8 @@ public class EditDiary extends Activity implements View.OnClickListener {
         String userID = pref.getString("userID", "");
         String userPassword = pref.getString("userPassword", "");
         user = new User();
-        user.setId(Integer.parseInt(userID)); //为全局对象赋值
-        user.setPassword(Integer.parseInt(userPassword));
+        user.setId(userID); //为全局对象赋值
+        user.setPassword(userPassword);
     }
 
     private void init() {
@@ -61,6 +62,7 @@ public class EditDiary extends Activity implements View.OnClickListener {
         saveDiary = (Button) findViewById(R.id.savaDiary);
         addPhoto = (Button) findViewById(R.id.addPhoto);
         mContext = getApplicationContext();
+        diaryDB = MyDiaryDB.getInstance(mContext);
         saveDiary.setOnClickListener(this);
     }
 
@@ -71,12 +73,25 @@ public class EditDiary extends Activity implements View.OnClickListener {
             case R.id.savaDiary:
                 String title = diaryTitle.getText().toString().trim(); //获取标题
                 String text = diaryText.getText().toString(); //获取日志内容
-                saveTitle(title); //将日志题目保存到数据库
-                saveText(title, text); //将日志内容保存到文件
-                Toast.makeText(mContext, "上传成功", Toast.LENGTH_LONG).show();
-                finish();
+                if(TextUtils.isEmpty(title)||TextUtils.isEmpty(text)) {
+                    Toast.makeText(mContext, "上传格式不对", Toast.LENGTH_LONG).show();
+                }else {
+                    if(isPresence(title)) { //查看数据库中是否有这个题目了,约定题目不同重复
+                        Toast.makeText(mContext, "该标题已存在,请修改", Toast.LENGTH_LONG).show();
+                    }else {
+                        saveTitle(title); //将日志题目保存到数据库
+                        saveText(title, text); //将日志内容保存到文件
+                        Toast.makeText(mContext, "上传成功", Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+                }
                 break;
         }
+    }
+
+    private boolean isPresence(String title) {
+
+        return diaryDB.titleIsPresence(user,title);
     }
 
     //根据日记名字来保存内容,取出来也要根据题目.因此日记题目不能重复
@@ -104,8 +119,6 @@ public class EditDiary extends Activity implements View.OnClickListener {
     //将日志标题保存到数据库
     private void saveTitle(String title) {
 
-        diaryDB = MyDiaryDB.getInstance(mContext);
         diaryDB.saveDiary(new Diary(title, user.getId()));
-
     }
 }

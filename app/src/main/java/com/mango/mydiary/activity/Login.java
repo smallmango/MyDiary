@@ -52,7 +52,7 @@ public class Login extends Activity implements View.OnClickListener{
                 String id = userID.getText().toString().trim();
                 String password = userPassword.getText().toString().trim();
                 diaryDb= MyDiaryDB.getInstance(mContext);
-                if(diaryDb.checkUser(Integer.parseInt(id),Integer.parseInt(password))){ //账户存在
+                if(diaryDb.checkUser(id,password)){ //账户存在
                     SharedPreferences.Editor editor = getSharedPreferences("user",MODE_PRIVATE).edit(); //对账户进行存储
                     editor.putString("userID",id);
                     editor.putString("userPassword",password);

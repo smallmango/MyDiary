@@ -11,14 +11,14 @@ public class MyDiaryOpenHelper extends SQLiteOpenHelper {
 
     //建立用户表
     public static final String CREATE_USER = "create table User("
-            + "id integer primary key ,"
-            + "user_password integer )";
+            + "id text primary key ,"
+            + "user_password text )";
 
     //建立日志记录表
     public static final String CREATE_DIARY = "create table Diary("
             + "id integer primary key autoincrement,"
             + "diary_name text, "
-            + "user_id integer )";
+            + "user_id text )";
 
 
     public MyDiaryOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -37,7 +37,9 @@ public class MyDiaryOpenHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-       //onCreate(db);
+        db.execSQL("drop table if exists User");
+        db.execSQL("drop table if exists Diary");
+       onCreate(db);
 
     }
 

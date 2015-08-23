@@ -76,9 +76,9 @@ public class DiaryList extends Activity implements View.OnClickListener{
         diaryDB=MyDiaryDB.getInstance(mContext);
         //setData(userID, diaryDB); //设置测试数据
         if(choose==1) {
-            diaryList = diaryDB.checkDiaryTitles(new User(Integer.parseInt(userID), Integer.parseInt(userPassword))); //获取返回对象
+            diaryList = diaryDB.checkDiaryTitles(new User(userID,userPassword)); //获取返回对象
         }else{
-            diaryList.addAll(diaryDB.checkDiaryTitles(new User(Integer.parseInt(userID),Integer.parseInt(userPassword))));
+            diaryList.addAll(diaryDB.checkDiaryTitles(new User(userID,userPassword)));
         }
 
     }
@@ -87,7 +87,7 @@ public class DiaryList extends Activity implements View.OnClickListener{
     private void setData(String userID, MyDiaryDB diaryDB) {
 
         for(int i=0;i<10;i++){
-            diaryDB.saveDiary(new Diary(i+1,"diary"+i+1,Integer.parseInt(userID)));
+            diaryDB.saveDiary(new Diary(i+1,"diary"+i+1,userID));
         }
     }
 

@@ -20,7 +20,7 @@ public class MyDiaryDB {
     public static final String DB_NAME = "my_diary";
 
     //数据库版本
-    public static final int VERSION = 1;
+    public static final int VERSION = 2;
 
     private static MyDiaryDB myDiaryDB;
 
@@ -62,16 +62,14 @@ public class MyDiaryDB {
     /**
      * 查询用户是否存在
      */
-    public boolean checkUser(int userID,int userPassword){
+    public boolean checkUser(String userID,String userPassword){
 
         Cursor  cursor = db.query("User",null,null,null,null,null,null);
         if(cursor.moveToFirst()){
             do {
-
-                int ID = cursor.getInt(cursor.getColumnIndex("id"));
-                int password = cursor.getInt(cursor.getColumnIndex("user_password"));
-                if(ID==userID&&userPassword==password) return true;  //账号存在
-
+                String ID = cursor.getString(cursor.getColumnIndex("id"));
+                String password = cursor.getString(cursor.getColumnIndex("user_password"));
+                if(ID.equals(userID)&&userPassword.equals(password)) return true;  //账号存在
             }while(cursor.moveToNext());
         }
         return false; //账号不存在
@@ -104,7 +102,7 @@ public class MyDiaryDB {
                 Diary diary = new Diary();
                 String id=cursor.getString(cursor.getColumnIndex("id"));
                 String diary_name = cursor.getString(cursor.getColumnIndex("diary_name"));
-                int user_id= user.getId();
+                String user_id= user.getId();
 
                 diary.setDiaryID(Integer.parseInt(id));
                 diary.setName(diary_name);
@@ -116,5 +114,20 @@ public class MyDiaryDB {
         return diarys;
     }
 
+    /**
+     * 查看该日记题目在数据库中是否存在
+     */
+    public boolean titleIsPresence(User user,String title){
+
+        Cursor cursor = db.query("Diary",null,"user_id=?",new String[]{String.valueOf(user.getId())},null,null,null);
+        if(cursor.moveToFirst()){
+            do {
+                String diary_name = cursor.getString(cursor.getColumnIndex("diary_name"));
+                if(title.equals(diary_name))
+                    return true;
+            }while(cursor.moveToNext());
+        }
+        return false;
+    }
 
 }

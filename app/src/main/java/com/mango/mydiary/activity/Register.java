@@ -48,7 +48,7 @@ public class Register extends Activity implements View.OnClickListener{
                 String id = userID.getText().toString().trim();
                 String password = userPassword.getText().toString().trim();
                 diaryDb=MyDiaryDB.getInstance(mContext);
-                diaryDb.savaUser(new User(Integer.parseInt(id), Integer.parseInt(password)));
+                diaryDb.savaUser(new User(id, password));
                 Toast.makeText(mContext,"注册完成",Toast.LENGTH_LONG).show();
                 finish();
                 break;
