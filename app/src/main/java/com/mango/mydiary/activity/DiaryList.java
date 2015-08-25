@@ -103,15 +103,6 @@ public class DiaryList extends Activity implements View.OnClickListener{
     }
 
 
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
 
     @Override
     protected void onRestart() {

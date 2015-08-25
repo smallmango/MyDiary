@@ -2,7 +2,9 @@ package com.mango.mydiary.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -26,13 +28,18 @@ import java.io.OutputStreamWriter;
  */
 public class EditDiary extends Activity implements View.OnClickListener {
 
+    private static final int TAKE_PHOTO = 1;
+    private static final int CROP_PHOTO = 2;
+    private String title;
     private Context mContext;
     private MyDiaryDB diaryDB;
+    private Uri imageUri; //图片路径
     private User user;
     private EditText diaryTitle;
     private EditText diaryText;
     private Button saveDiary;
     private Button addPhoto;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +50,10 @@ public class EditDiary extends Activity implements View.OnClickListener {
         init(); //初始化控件并添加点击事件
         getUser(); //获取用户对象
 
+    }
+
+    private void getDiaryTitle() {
+        title=diaryTitle.getText().toString().trim();
     }
 
     private void getUser() {
@@ -64,14 +75,16 @@ public class EditDiary extends Activity implements View.OnClickListener {
         mContext = getApplicationContext();
         diaryDB = MyDiaryDB.getInstance(mContext);
         saveDiary.setOnClickListener(this);
+        addPhoto.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
 
+        getDiaryTitle(); //获取日志标题
         switch (v.getId()) {
             case R.id.savaDiary:
-                String title = diaryTitle.getText().toString().trim(); //获取标题
+
                 String text = diaryText.getText().toString(); //获取日志内容
                 if(TextUtils.isEmpty(title)||TextUtils.isEmpty(text)) {
                     Toast.makeText(mContext, "上传格式不对", Toast.LENGTH_LONG).show();
@@ -85,6 +98,13 @@ public class EditDiary extends Activity implements View.OnClickListener {
                         finish();
                     }
                 }
+                break;
+            case R.id.addPhoto:
+                Intent intent = new Intent(this,AddPhoto.class);
+                Bundle bundle = new Bundle();
+                bundle.putString("diaryTitle",title);
+                intent.putExtras(bundle);
+                startActivity(intent);
                 break;
         }
     }
