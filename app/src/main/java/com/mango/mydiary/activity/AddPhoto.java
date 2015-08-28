@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -23,8 +24,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by Administrator on 2015/8/24 0024.
@@ -86,9 +85,9 @@ public class AddPhoto extends Activity implements View.OnClickListener {
                 openAlbumIntent.setType("image/*"); //不能少
                 startActivityForResult(openAlbumIntent, CHOOSE_PHOTO);
                 break;
-            /*case R.id.addImage:
-
-                break;*/
+            case R.id.addImage:
+                finish();
+                break;
         }
     }
 
@@ -106,11 +105,15 @@ public class AddPhoto extends Activity implements View.OnClickListener {
 
                         String imgName = createPhotoFileName(); //给图片设定一个名字,要唯一
                         //写一个方法将此文件保存到本应用下面啦
-                        savePicture(imgName, bitmap);
+
 
                         if (bitmap != null) {
                             //为防止原始图片过大导致内存溢出，这里先缩小原图显示，然后释放原始Bitmap占用的内存
                             Bitmap smallBitmap = zoomBitmap(bitmap, bitmap.getWidth() / SCALE, bitmap.getHeight() / SCALE);
+
+                            savePhotoToSDCard(Environment.getExternalStorageDirectory().getAbsolutePath(),imgName,smallBitmap);
+
+                            bitmap.recycle(); //释放占用的内存
 
                             diaryImage.setImageBitmap(smallBitmap);
                         }
@@ -131,6 +134,11 @@ public class AddPhoto extends Activity implements View.OnClickListener {
                         if (photo != null) {
                             //为防止原始图片过大导致内存溢出，这里先缩小原图显示，然后释放原始Bitmap占用的内存
                             Bitmap smallBitmap = zoomBitmap(photo, photo.getWidth() / SCALE, photo.getHeight() / SCALE);
+
+                            String imageName=createPhotoFileName();
+
+                            savePhotoToSDCard(Environment.getExternalStorageDirectory().getAbsolutePath(),imageName,smallBitmap);
+
                             //释放原始图片占用的内存，防止out of memory异常发生
                             photo.recycle();
                             diaryImage.setImageBitmap(smallBitmap);
@@ -167,6 +175,7 @@ public class AddPhoto extends Activity implements View.OnClickListener {
                 dir.mkdirs();
             }
             File photoFile = new File(path, photoName); //在指定路径下创建文件
+            Log.i("ms",path+photoName);
             FileOutputStream fileOutputStream = null;
             try {
                 fileOutputStream = new FileOutputStream(photoFile);
@@ -195,10 +204,10 @@ public class AddPhoto extends Activity implements View.OnClickListener {
 
     /**创建图片不同的文件名**/
     private String createPhotoFileName() {
-        String fileName = "";
-        Date date = new Date(System.currentTimeMillis());  //系统当前时间
+        String fileName = title+"image";
+        /*Date date = new Date(System.currentTimeMillis());  //系统当前时间
         SimpleDateFormat dateFormat = new SimpleDateFormat("'IMG'_yyyyMMdd_HHmmss");
-        fileName = dateFormat.format(date) + ".jpg";
+        fileName = dateFormat.format(date) + ".jpg";*/
         return fileName;
     }
 
@@ -209,7 +218,7 @@ public class AddPhoto extends Activity implements View.OnClickListener {
 
         FileOutputStream fos =null;
         try {//直接写入名称即可，没有会被自动创建；私有：只有本应用才能访问，重新内容写入会被覆盖
-            fos = this.openFileOutput(fileName, Context.MODE_PRIVATE);
+            fos = this.openFileOutput(fileName+"photo", Context.MODE_PRIVATE);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);// 把图片写入指定文件夹中
         } catch (Exception e) {
             e.printStackTrace();

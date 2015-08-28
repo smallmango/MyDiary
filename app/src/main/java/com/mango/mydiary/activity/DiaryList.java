@@ -117,4 +117,8 @@ public class DiaryList extends Activity implements View.OnClickListener{
         getData(SECOND); //重新获取数据库数据
         diaryAdapter.notifyDataSetChanged();
     }
+
+
+
+
 }
